@@ -65,12 +65,22 @@ Reference policies on the same 20 evaluation seeds:
 | Uniform random actions | 303 ± 145 |
 | Greedy move-away (pick the action that maximises distance now) | 562 ± 123 |
 
-![learning curve](assets/learning_curve.png)
+![learning curve, 200k steps](assets/learning_curve.png)
 
-So after 200k steps PPO is clearly better than random and clearly short of a one-line heuristic.
-That is the honest state of the baseline, not a solved environment. Longer training, observation
-normalisation (positions are 0 to 10, unscaled), and a larger step size are the obvious next
-experiments.
+PPO, 1,000,000 timesteps per seed (about 2,000 episodes each, roughly 40 minutes per seed):
+
+| Seed | Mean return, first 25 episodes | Mean return, last 25 episodes | Greedy eval, 20 episodes |
+|---|---|---|---|
+| 0 | 384 | 554 | 496 ± 104 |
+| 1 | 372 | 605 | 521 ± 101 |
+| 2 | 374 | 586 | 505 ± 101 |
+
+![learning curve, 1M steps](assets/learning_curve_1m.png)
+
+So at 200k steps PPO is clearly better than random and clearly short of the one-line heuristic; at
+1M steps it reaches about 90 percent of the heuristic's return and is still improving slowly. That
+is the honest state of the baseline, not a solved environment. Observation normalisation (positions
+are 0 to 10, unscaled), a larger step size and a moving seeker are the obvious next experiments.
 
 ## Layout
 
@@ -78,7 +88,7 @@ experiments.
 agentsim.py            HideAndSeekEnv and the two backends
 train.py               PPO training + evaluation (argparse)
 scripts/plot_curve.py  learning curves from Monitor CSVs
-assets/                learning_curve.png
+assets/                learning curves (200k and 1M steps)
 requirements.txt       pinned versions used for the results above
 ```
 
