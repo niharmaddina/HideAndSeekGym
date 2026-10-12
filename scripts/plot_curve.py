@@ -28,6 +28,7 @@ def main() -> None:
     ap.add_argument("runs", nargs="+")
     ap.add_argument("--out", default="assets/learning_curve.png")
     ap.add_argument("--window", type=int, default=10)
+    ap.add_argument("--title", default="PPO on HideAndSeekEnv")
     args = ap.parse_args()
 
     fig, ax = plt.subplots(figsize=(7, 4))
@@ -40,7 +41,7 @@ def main() -> None:
         print(f"{run}: {len(df)} episodes, first {args.window} mean return {first:.1f}, last {args.window} mean return {last:.1f}")
     ax.set_xlabel("timesteps")
     ax.set_ylabel(f"episode return (moving average, {args.window} episodes)")
-    ax.set_title("PPO on HideAndSeekEnv")
+    ax.set_title(args.title)
     ax.grid(alpha=0.3)
     ax.legend()
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
