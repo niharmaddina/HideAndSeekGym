@@ -29,13 +29,16 @@ def main() -> None:
     ap.add_argument("--out", default="assets/learning_curve.png")
     ap.add_argument("--window", type=int, default=10)
     ap.add_argument("--title", default="PPO on HideAndSeekEnv")
+    ap.add_argument("--labels", nargs="+", help="legend labels, one per run (default: the run directory name)")
     args = ap.parse_args()
 
     fig, ax = plt.subplots(figsize=(7, 4))
-    for run in args.runs:
+    if args.labels and len(args.labels) != len(args.runs):
+        ap.error("--labels needs one label per run")
+    for i, run in enumerate(args.runs):
         df = load(Path(run))
         smooth = df["r"].rolling(args.window, min_periods=1).mean()
-        line, = ax.plot(df["timesteps"], smooth, label=Path(run).name)
+        line, = ax.plot(df["timesteps"], smooth, label=args.labels[i] if args.labels else Path(run).name)
         ax.plot(df["timesteps"], df["r"], alpha=0.2, color=line.get_color())
         first, last = df["r"].iloc[: args.window].mean(), df["r"].iloc[-args.window:].mean()
         print(f"{run}: {len(df)} episodes, first {args.window} mean return {first:.1f}, last {args.window} mean return {last:.1f}")
